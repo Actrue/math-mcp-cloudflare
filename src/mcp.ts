@@ -23,6 +23,7 @@ export class MyMCP extends McpAgent {
 		// Simple calculation tool
 		this.server.tool(
 			"calculate",
+			"此工具用于计算简单数学表达式\n\n输入参数:\n- expr: 数学表达式字符串\n\n示例:\n{\n  \"expr\": \"2+3*4\"\n}",
 			{ expr: z.string() },
 			async ({ expr }) => ({
 				content: [{ type: "text", text: String(tools.calculateExpression(expr)) }],
@@ -32,6 +33,7 @@ export class MyMCP extends McpAgent {
 		// Calculator tool with multiple operations
 		this.server.tool(
 			"calculate",
+			"此工具支持多种数学运算\n\n输入参数:\n- operation: 运算类型(add/subtract/multiply/divide)\n- a: 第一个数字\n- b: 第二个数字\n\n示例:\n{\n  \"operation\": \"multiply\",\n  \"a\": 5,\n  \"b\": 4\n}",
 			{
 				operation: z.enum(["add", "subtract", "multiply", "divide"]),
 				a: z.number(),
