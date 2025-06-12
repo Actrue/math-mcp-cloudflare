@@ -6,7 +6,7 @@ import * as math from 'mathjs';
  * @param scope 可选的变量作用域对象
  * @returns 计算结果
  */
-function evaluateMathExpression(expression: string, scope?: Record<string, any>): any {
+function evaluateMathExpression(expression: string, scope: Record<string, any>={}): any {
   try {
     return math.evaluate(expression, scope);
   } catch (error) {
