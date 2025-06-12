@@ -1,50 +1,25 @@
-# Building a Remote MCP Server on Cloudflare (Without Auth)
+# 数学运算工具-cloudflare版本
 
-This example allows you to deploy a remote MCP server that doesn't require authentication on Cloudflare Workers. 
+一个运行在Cloudflare Worker上的数学运算工具集，提供以下功能：
 
-## Get started: 
+- 基础数学运算（加减乘除、幂运算）
+- 三角函数计算（sin/cos/tan）
+- 矩阵运算（创建矩阵、矩阵加减乘）
+- 符号计算（表达式解析、求导）
+- 表达式有理化
 
-[![Deploy to Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/ai/tree/main/demos/remote-mcp-authless)
+## 体验地址
 
-This will deploy your MCP server to a URL like: `remote-mcp-server-authless.<your-account>.workers.dev/sse`
+- SSE体验地址: https://math.sereniblue.com/sse
+- streamableHttp体验地址: https://math.sereniblue.com/mcp
 
-Alternatively, you can use the command line below to get the remote MCP Server created on your local machine:
-```bash
-npm create cloudflare@latest -- my-mcp-server --template=cloudflare/ai/demos/remote-mcp-authless
-```
+## 功能说明
 
-## Customizing your MCP Server
+1. **基础运算**：支持加减乘除、幂运算、括号表达式
+2. **高级计算**：支持三角函数、对数、平方根等
+3. **矩阵运算**：支持矩阵创建、加法、乘法
+4. **符号计算**：支持表达式解析、求导、有理化
 
-To add your own [tools](https://developers.cloudflare.com/agents/model-context-protocol/tools/) to the MCP server, define each tool inside the `init()` method of `src/index.ts` using `this.server.tool(...)`. 
+## 部署说明
 
-## Connect to Cloudflare AI Playground
-
-You can connect to your MCP server from the Cloudflare AI Playground, which is a remote MCP client:
-
-1. Go to https://playground.ai.cloudflare.com/
-2. Enter your deployed MCP server URL (`remote-mcp-server-authless.<your-account>.workers.dev/sse`)
-3. You can now use your MCP tools directly from the playground!
-
-## Connect Claude Desktop to your MCP server
-
-You can also connect to your remote MCP server from local MCP clients, by using the [mcp-remote proxy](https://www.npmjs.com/package/mcp-remote). 
-
-To connect to your MCP server from Claude Desktop, follow [Anthropic's Quickstart](https://modelcontextprotocol.io/quickstart/user) and within Claude Desktop go to Settings > Developer > Edit Config.
-
-Update with this configuration:
-
-```json
-{
-  "mcpServers": {
-    "calculator": {
-      "command": "npx",
-      "args": [
-        "mcp-remote",
-        "http://localhost:8787/sse"  // or remote-mcp-server-authless.your-account.workers.dev/sse
-      ]
-    }
-  }
-}
-```
-
-Restart Claude and you should see the tools become available. 
+无多余依赖，把wrangler中的域名改为自己的就可以直接wrangler deploy进行部署。
