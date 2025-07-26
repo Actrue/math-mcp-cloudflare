@@ -191,6 +191,64 @@ describe('矩阵运算测试', () => {
   })
 })
 
+describe('方程组求解测试', () => {
+
+  describe('solveLinearSystem', () => {
+    it('应该正确求解2x2线性方程组', () => {
+      const coefficients = [[2, 1], [1, 3]];
+      const constants = [5, 7];
+      const solution = tools.solveLinearSystem(coefficients, constants);
+      expect(solution.toArray()).toEqual([[1.6], [1.8]]); // x=1.6, y=1.8
+    });
+
+    it('应该正确求解3x3线性方程组', () => {
+      const coefficients = [[1, 1, 1], [0, 1, 1], [0, 0, 1]];
+      const constants = [6, 4, 3];
+      const solution = tools.solveLinearSystem(coefficients, constants);
+      expect(solution.toArray()).toEqual([[2], [1], [3]]); // x=2, y=1, z=3
+    });
+
+    it('应该处理无解或多解的情况（mathjs会抛出错误）', () => {
+      const coefficients = [[1, 1], [2, 2]];
+      const constants = [1, 3];
+      expect(() => tools.solveLinearSystem(coefficients, constants)).toThrow();
+    });
+
+    it('应该处理系数矩阵和常数向量维度不匹配的情况', () => {
+      const coefficients = [[1, 1], [2, 2]];
+      const constants = [1, 3, 5];
+      expect(() => tools.solveLinearSystem(coefficients, constants)).toThrow();
+    });
+  });
+
+  describe('solveEquationSystem', () => {
+    it('应该正确求解带变量名的2x2线性方程组', () => {
+      const equations = { coefficients: [[2, 1], [1, 3]], constants: [5, 7] };
+      const variables = ['x', 'y'];
+      const solution = tools.solveEquationSystem(equations, variables);
+      expect(solution).toEqual({ x: 1.6, y: 1.8 });
+    });
+
+    it('应该正确求解带变量名的3x3线性方程组', () => {
+      const equations = { coefficients: [[1, 1, 1], [0, 1, 1], [0, 0, 1]], constants: [6, 4, 3] };
+      const variables = ['x', 'y', 'z'];
+      const solution = tools.solveEquationSystem(equations, variables);
+      expect(solution).toEqual({ x: 2, y: 1, z: 3 });
+    });
+
+    it('如果没有提供变量名，应该返回扁平化的数组', () => {
+      const equations = { coefficients: [[2, 1], [1, 3]], constants: [5, 7] };
+      const solution = tools.solveEquationSystem(equations);
+      expect(solution).toEqual([1.6, 1.8]);
+    });
+
+    it('应该处理字符串格式的方程组（目前未实现）', () => {
+      const equations = ['2x + y = 5', 'x + 3y = 7'];
+      expect(() => tools.solveEquationSystem(equations)).toThrow('字符串格式的方程组解析功能待实现');
+    });
+  });
+});
+
 describe('符号计算测试', () => {
   
   describe('符号表达式解析', () => {

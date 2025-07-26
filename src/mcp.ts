@@ -176,5 +176,43 @@ export class MyMCP extends McpAgent {
 			}
 		);
 
+		// Linear system solver tool
+		this.server.tool(
+			"solveLinearSystem",
+			"此工具用于求解线性方程组\n\n运算目标: 求解形如 Ax = b 的线性方程组\n\n输入参数:\n- coefficients: 系数矩阵 A\n- constants: 常数向量 b\n\n示例:\n{\n  \"coefficients\": [[2, 1], [1, 3]],\n  \"constants\": [5, 7]\n}\n\n求解方程组:\n2x + y = 5\nx + 3y = 7",
+			{ 
+				coefficients: z.array(z.array(z.number())),
+				constants: z.array(z.number())
+			},
+			async ({ coefficients, constants }) => {
+			  try {
+			    const result = tools.solveLinearSystem(coefficients, constants);
+			    return { content: [{ type: "text", text: JSON.stringify(result.toArray()) }] };
+			  } catch (error) {
+			    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }] };
+			  }
+			}
+		);
+
+		// Equation system solver tool
+		this.server.tool(
+			"solveEquationSystem",
+			"此工具用于求解方程组（支持变量名）\n\n运算目标: 求解线性方程组并返回带变量名的结果\n\n输入参数:\n- coefficients: 系数矩阵\n- constants: 常数向量\n- variables: 变量名数组（可选）\n\n示例:\n{\n  \"coefficients\": [[2, 1], [1, 3]],\n  \"constants\": [5, 7],\n  \"variables\": [\"x\", \"y\"]\n}\n\n返回: {\"x\": 1, \"y\": 3}",
+			{ 
+				coefficients: z.array(z.array(z.number())),
+				constants: z.array(z.number()),
+				variables: z.array(z.string()).optional()
+			},
+			async ({ coefficients, constants, variables }) => {
+			  try {
+			    const equations = { coefficients, constants };
+			    const result = tools.solveEquationSystem(equations, variables);
+			    return { content: [{ type: "text", text: JSON.stringify(result) }] };
+			  } catch (error) {
+			    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }] };
+			  }
+			}
+		);
+
 	}
 }

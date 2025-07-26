@@ -103,6 +103,61 @@ function matrixMultiply(a: math.Matrix | any[], b: math.Matrix | any[]) {
   return math.multiply(a, b);
 }
 
+/**
+ * 求解线性方程组
+ * @param coefficients 系数矩阵 A，形如 [[a11, a12, ...], [a21, a22, ...], ...]
+ * @param constants 常数向量 b，形如 [b1, b2, ...]
+ * @returns 解向量 x，使得 Ax = b
+ */
+function solveLinearSystem(coefficients: number[][], constants: number[]) {
+  try {
+    // 使用mathjs的lusolve函数求解线性方程组
+    const A = math.matrix(coefficients);
+    const b = math.matrix(constants);
+    const solution = math.lusolve(A, b);
+    return solution;
+  } catch (error) {
+    console.error('Failed to solve linear system:', error);
+    throw new Error(`无法求解线性方程组: ${error}`);
+  }
+}
+
+/**
+ * 求解方程组（支持多种格式）
+ * @param equations 方程组，可以是字符串数组或系数矩阵格式
+ * @param variables 变量名数组（可选）
+ * @returns 求解结果
+ */
+function solveEquationSystem(equations: string[] | {coefficients: number[][], constants: number[]}, variables?: string[]) {
+  try {
+    if (Array.isArray(equations)) {
+      // 如果是字符串数组格式的方程组
+      // 这里可以扩展解析字符串方程的功能
+      throw new Error('字符串格式的方程组解析功能待实现');
+    } else {
+      // 如果是系数矩阵格式
+      const { coefficients, constants } = equations;
+      const solution = solveLinearSystem(coefficients, constants);
+        
+        // 如果提供了变量名，返回带变量名的结果
+        if (variables && variables.length > 0) {
+          const solutionArray = solution.toArray() as number[][];
+          const result: Record<string, number> = {};
+          variables.forEach((variable, index) => {
+            result[variable] = solutionArray[index][0]; // 获取扁平化后的值
+          });
+          return result;
+        }
+        
+        // 如果没有提供变量名，返回扁平化的数组
+        return solution.toArray().flat();
+    }
+  } catch (error) {
+    console.error('Failed to solve equation system:', error);
+    throw new Error(`求解方程组失败: ${error}`);
+  }
+}
+
 export const tools={
     evaluateMathExpression,
     calculateExpression,
@@ -112,5 +167,7 @@ export const tools={
     symbolicCompute,
     simplifyExpression,
     derivative,
-    rationalize
+    rationalize,
+    solveLinearSystem,
+    solveEquationSystem
 }
