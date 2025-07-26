@@ -17,7 +17,18 @@ function symbolicCompute(expression: string) {
  * @returns 简化后的表达式
  */
 function simplifyExpression(expr: string | math.MathNode, scope: Record<string, any>={}, options?: math.SimplifyOptions) {
-  return math.simplify(expr, scope, options);
+  // 如果有作用域变量，先计算表达式
+  if (Object.keys(scope).length > 0) {
+    // 如果是MathNode，转换为字符串
+    const exprStr = typeof expr === 'string' ? expr : expr.toString();
+    return math.evaluate(exprStr, scope);
+  }
+  // 否则进行符号简化
+  if (options) {
+    return math.simplify(expr, {}, options);
+  } else {
+    return math.simplify(expr);
+  }
 }
 
 /**
