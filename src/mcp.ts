@@ -34,7 +34,6 @@ export class MyMCP extends McpAgent {
 	
 
 		// Expression simplification tool
-		/* 功能暂时有bug
 		this.server.tool(
 			"simplifyExpression",
 			"此工具用于简化数学表达式\n\n输入参数:\n- expr: 要简化的表达式字符串\n- scope: 可选的作用域对象(变量值)\n\n示例:\n{\n  \"expr\": \"2*x + 3*x\",\n  \"scope\": {\"x\": 2}\n}",
@@ -52,7 +51,6 @@ export class MyMCP extends McpAgent {
 				}
 			}
 		);
-		*/
 
 		// Calculator tool with multiple operations
 		this.server.tool(
