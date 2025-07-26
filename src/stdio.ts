@@ -1,4 +1,4 @@
-
+#!/usr/bin/env tsx
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { tools } from './tools';
@@ -9,7 +9,7 @@ const server = new McpServer({
 	version: "1.0.0",
 });
 
-
+console.log('hello world')
 
 // Math expression evaluation tool
 server.tool(
@@ -35,8 +35,7 @@ server.tool(
 
 
 // Expression simplification tool
-/* 功能暂时有bug
-this.server.tool(
+server.tool(
 	"simplifyExpression",
 	"此工具用于简化数学表达式\n\n输入参数:\n- expr: 要简化的表达式字符串\n- scope: 可选的作用域对象(变量值)\n\n示例:\n{\n  \"expr\": \"2*x + 3*x\",\n  \"scope\": {\"x\": 2}\n}",
 	{ 
@@ -46,14 +45,13 @@ this.server.tool(
 	async ({ expr, scope }) => {
 		try {
 			const node = tools.symbolicCompute(expr);
-			const result = tools.simplifyExpression(node, scope);
+			const result = tools.simplifyExpression(node.toString(), scope);
 			return { content: [{ type: "text", text: result.toString() }] };
 		} catch (error) {
 			return { content: [{ type: "text", text: `Error: ${error}` }] };
 		}
 	}
 );
-*/
 
 // Calculator tool with multiple operations
 server.tool(
@@ -175,6 +173,44 @@ server.tool(
 			return { content: [{ type: "text", text: result.toString() }] };
 		} catch (error) {
 			return { content: [{ type: "text", text: `Error: ${error}` }] };
+		}
+	}
+);
+
+// Linear system solver tool
+server.tool(
+	"solveLinearSystem",
+	"此工具用于求解线性方程组\n\n运算目标: 求解形如 Ax = b 的线性方程组\n\n输入参数:\n- coefficients: 系数矩阵 A\n- constants: 常数向量 b\n\n示例:\n{\n  \"coefficients\": [[2, 1], [1, 3]],\n  \"constants\": [5, 7]\n}\n\n求解方程组:\n2x + y = 5\nx + 3y = 7",
+	{ 
+		coefficients: z.array(z.array(z.number())),
+		constants: z.array(z.number())
+	},
+	async ({ coefficients, constants }) => {
+		try {
+			const result = tools.solveLinearSystem(coefficients, constants);
+			return { content: [{ type: "text", text: JSON.stringify(result) }] };
+		} catch (error) {
+			return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }] };
+		}
+	}
+);
+
+// Equation system solver tool
+server.tool(
+	"solveEquationSystem",
+	"此工具用于求解方程组（支持变量名）\n\n运算目标: 求解线性方程组并返回带变量名的结果\n\n输入参数:\n- coefficients: 系数矩阵\n- constants: 常数向量\n- variables: 变量名数组（可选）\n\n示例:\n{\n  \"coefficients\": [[2, 1], [1, 3]],\n  \"constants\": [5, 7],\n  \"variables\": [\"x\", \"y\"]\n}\n\n返回: {\"x\": 1, \"y\": 3}",
+	{ 
+		coefficients: z.array(z.array(z.number())),
+		constants: z.array(z.number()),
+		variables: z.array(z.string()).optional()
+	},
+	async ({ coefficients, constants, variables }) => {
+		try {
+			const equations = { coefficients, constants };
+			const result = tools.solveEquationSystem(equations, variables);
+			return { content: [{ type: "text", text: JSON.stringify(result) }] };
+		} catch (error) {
+			return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }] };
 		}
 	}
 );

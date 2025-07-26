@@ -1,8 +1,12 @@
 {
 	"name": "remote-mcp-server-authless",
 	"version": "0.0.0",
-	"private": true,
+	"private": false,
 	"type": "module",
+	"main": "src/stdio.ts",
+	"bin": {
+		"math-mcp": "src/stdio.ts"
+	},
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
@@ -19,6 +23,7 @@
 		"agents": "^0.0.94",
 		"hono": "^4.7.11",
 		"mathjs": "^14.5.2",
+		"remote-mcp-server-authless": "link:",
 		"zod": "^3.25.51"
 	},
 	"devDependencies": {
