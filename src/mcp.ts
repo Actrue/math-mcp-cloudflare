@@ -44,7 +44,7 @@ export class MyMCP extends McpAgent {
 			async ({ expr, scope }) => {
 				try {
 					const node = tools.symbolicCompute(expr);
-					const result = tools.simplifyExpression(node, scope);
+					const result = tools.simplifyExpression(node.toString(), scope);
 					return { content: [{ type: "text", text: result.toString() }] };
 				} catch (error) {
 					return { content: [{ type: "text", text: `Error: ${error}` }] };
@@ -187,7 +187,7 @@ export class MyMCP extends McpAgent {
 			async ({ coefficients, constants }) => {
 			  try {
 			    const result = tools.solveLinearSystem(coefficients, constants);
-			    return { content: [{ type: "text", text: JSON.stringify(result.toArray()) }] };
+			    return { content: [{ type: "text", text: JSON.stringify(result) }] };
 			  } catch (error) {
 			    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : String(error)}` }] };
 			  }
